@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillShare Next — IT Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+    <!-- Навигация -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">SkillShare Next</span>
+                <span class="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">HACKNEXT</span>
+            </div>
+            <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition shadow-lg shadow-blue-500/20">
+                + Добавить IT-проект
+            </button>
+        </div>
+    </header>
+
+    <!-- Главный блок -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="mb-8 text-center md:text-left">
+            <h1 class="text-2xl md:text-4xl font-extrabold mb-2">IT & Software Open Source Платформа</h1>
+            <p class="text-slate-400 text-sm md:text-base">Каталог веб-сервисов, API, AI-агентов и приложений от участников хакатона.</p>
+        </div>
+
+        <!-- Сетка проектов -->
+        <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Динамически сюда выводятся карточки -->
+        </div>
+    </main>
+
+    <!-- Модальное окно: Добавление проекта -->
+    <div id="projectModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <h2 class="text-xl font-bold mb-4 text-white">Новый IT-проект</h2>
+            <form id="projectForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Название сервиса / библиотеки</label>
+                    <input type="text" id="title" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-white" placeholder="Например: AI Code Reviewer">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Стек & Категория</label>
+                    <select id="category" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-white">
+                        <option value="Web & Frontend">Web & Frontend (React/Vue/Tailwind)</option>
+                        <option value="Backend & API">Backend & API (Node.js/Python/Go)</option>
+                        <option value="AI & Machine Learning">AI & Machine Learning (Gemini/OpenAI)</option>
+                        <option value="Mobile Apps">Mobile Apps (Flutter/React Native)</option>
+                        <option value="DevOps & Cloud">DevOps & Cloud (Docker/Kubernetes)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Описание проекта</label>
+                    <textarea id="description" rows="3" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-white" placeholder="Опишите функции и архитектуру..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-400 mb-1">Ссылка на GitHub репозиторий</label>
+                    <input type="url" id="link" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-white" placeholder="https://github.com/...">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Отмена</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition">Опубликовать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно Шаг 1: Выбор семейства ИИ -->
+    <div id="aiFamilyModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <h2 class="text-xl font-bold mb-2 text-white">🤖 Выберите семейство ИИ</h2>
+            <p class="text-slate-400 text-sm mb-4">Выберите разработчика или архитектуру модели:</p>
+            
+            <div class="space-y-3 mb-6">
+                <!-- Google Gemma -->
+                <div onclick="openAiVersions('gemma')" class="bg-slate-950 p-4 rounded-xl border border-slate-800 cursor-pointer hover:border-blue-500 transition flex justify-between items-center">
+                    <div>
+                        <div class="font-semibold text-white">Google Gemma</div>
+                        <div class="text-xs text-slate-400">Открытая линейка моделей (Gemma 4, 3, 2, CodeGemma)</div>
+                    </div>
+                    <span class="text-blue-400">&rarr;</span>
+                </div>
+
+                <!-- DeepSeek -->
+                <div onclick="openAiVersions('deepseek')" class="bg-slate-950 p-4 rounded-xl border border-slate-800 cursor-pointer hover:border-blue-500 transition flex justify-between items-center">
+                    <div>
+                        <div class="font-semibold text-white">DeepSeek</div>
+                        <div class="text-xs text-slate-400">Высокопроизводительные модели (DeepSeek-V3, R1)</div>
+                    </div>
+                    <span class="text-blue-400">&rarr;</span>
+                </div>
+
+                <!-- Llama (Meta) -->
+                <div onclick="openAiVersions('llama')" class="bg-slate-950 p-4 rounded-xl border border-slate-800 cursor-pointer hover:border-blue-500 transition flex justify-between items-center">
+                    <div>
+                        <div class="font-semibold text-white">Meta Llama</div>
+                        <div class="text-xs text-slate-400">Популярные опенсорсные языковые модели (Llama 3 / 3.1)</div>
+                    </div>
+                    <span class="text-blue-400">&rarr;</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="button" onclick="closeAiFamilyModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Шаг 2: Выбор конкретной версии модели -->
+    <div id="aiVersionModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="versionModalTitle" class="text-xl font-bold text-white">📥 Версии модели</h2>
+                <button onclick="backToFamilies()" class="text-xs text-blue-400 hover:underline">&larr; Назад к выбору ИИ</button>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Выберите конкретную версию или модификацию для перехода на GitHub:</p>
+            
+            <div id="versionsContainer" class="space-y-3 mb-6">
+                <!-- Динамически заполняется через JS -->
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeAiVersionModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Отмена</button>
+                <button type="button" onclick="confirmAiDownload()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition shadow-lg shadow-emerald-600/20">Скачать с GitHub &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипт -->
+    <script>
+        let projects = [
+            { 
+                title: "SkillShare Next Core", 
+                category: "Web & Frontend", 
+                description: "SPA-платформа для мгновенного обмена проектами и исходным кодом. Построена на Tailwind CSS и JS LocalStorage.", 
+                link: "https://github.com/tailwindlabs/tailwindcss",
+                isAI: false
+            },
+            { 
+                title: "Global AI Hub & Models", 
+                category: "AI & Machine Learning", 
+                description: "Каталог передовых открытых языковых моделей от ведущих разработчиков (Gemma, DeepSeek, Llama).", 
+                isAI: true
+            },
+            { 
+                title: "FastAPI Task Microservice", 
+                category: "Backend & API", 
+                description: "Высоконагруженный бэкенд-сервис для обработки очереди задач пользователей с использованием PostgreSQL и Redis.", 
+                link: "https://github.com/tiangolo/fastapi",
+                isAI: false
+            },
+            { 
+                title: "Flutter Cross-Platform App", 
+                category: "Mobile Apps", 
+                description: "Мобильное клиентское приложение с поддержкой офлайн-режима, синхронизацией данных и адаптивным Material Design 3.", 
+                link: "https://github.com/flutter/flutter",
+                isAI: false
+            },
+            { 
+                title: "Docker & K8s Deploy Kit", 
+                category: "DevOps & Cloud", 
+                description: "Набор конфигураций и скриптов автоматизации для быстрой контейнеризации и деплоя микросервисов в облачный кластер.", 
+                link: "https://github.com/docker/compose",
+                isAI: false
+            }
+        ];
+
+        // Данные по версиям для каждого семейства ИИ
+        const aiData = {
+            gemma: {
+                title: "Google Gemma (Все версии)",
+                versions: [
+                    { name: "Gemma 4 (26B MoE / 31B Dense)", desc: "Флагманские открытые модели с нативной мультимодальностью", link: "https://github.com/google/gemma.cpp" },
+                    { name: "Gemma 4 Edge (E2B / E4B)", desc: "Сверхлегкие модели для периферии и смартфонов", link: "https://github.com/google/gemma.cpp" },
+                    { name: "Gemma 3 (1B / 4B / 12B / 27B)", desc: "Продвинутая мультиязычная мультимодальная линейка", link: "https://github.com/google/gemma.cpp" },
+                    { name: "Gemma 2 (2B / 9B / 27B)", desc: "Второе поколение с повышенной производительностью", link: "https://github.com/google/gemma.cpp" },
+                    { name: "CodeGemma & PaliGemma", desc: "Специализированные модели для кода и зрения", link: "https://github.com/google/gemma.cpp" }
+                ]
+            },
+            deepseek: {
+                title: "DeepSeek Models",
+                versions: [
+                    { name: "DeepSeek-R1 (Distilled)", desc: "Мощная модель с рассуждениями (Reasoning) открытым весом", link: "https://github.com/deepseek-ai/DeepSeek-R1" },
+                    { name: "DeepSeek-V3", desc: "Флагманская смесь экспертов (MoE) архитектура", link: "https://github.com/deepseek-ai/DeepSeek-V3" },
+                    { name: "DeepSeek-Coder-V2", desc: "Продвинутый открытый помощник для программирования", link: "https://github.com/deepseek-ai/DeepSeek-Coder-V2" }
+                ]
+            },
+            llama: {
+                title: "Meta Llama Models",
+                versions: [
+                    { name: "Llama 3.1 (8B / 70B / 405B)", desc: "Полнофункциональные открытые языковые модели от Meta", link: "https://github.com/meta-llama/llama3" },
+                    { name: "Llama 3.2 (1B / 3B Vision)", desc: "Легковесные модели и поддержка мультимодальности для Edge", link: "https://github.com/meta-llama/llama3" }
+                ]
+            }
+        };
+
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+            projects.forEach((p, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800/80 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-500/50 transition shadow-lg";
+                
+                let actionBtn = '';
+                if (p.isAI) {
+                    actionBtn = `<button onclick="openAiFamilyModal()" class="text-emerald-400 hover:text-emerald-300 text-sm font-medium transition flex items-center space-x-1 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                        <span>📥 Выбрать модель ИИ &rarr;</span>
+                    </button>`;
+                } else {
+                    actionBtn = `<a href="${p.link}" target="_blank" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition flex items-center space-x-1 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">
+                        <span>🔗 Репозиторий GitHub &rarr;</span>
+                    </a>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs bg-slate-800 text-blue-400 px-2.5 py-1 rounded-md font-medium border border-slate-700">${p.category}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-white">${p.title}</h3>
+                        <p class="text-slate-400 text-sm mb-4 leading-relaxed">${p.description}</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center">
+                        ${actionBtn}
+                        <button onclick="deleteProject(${index})" class="text-slate-600 hover:text-red-400 text-xs transition">Удалить</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Управление модалками
+        function openAddModal() {
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.getElementById('projectModal').classList.add('flex');
+        }
+        function closeAddModal() {
+            document.getElementById('projectModal').classList.remove('flex');
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+
+        // Шаг 1: Семейства ИИ
+        function openAiFamilyModal() {
+            document.getElementById('aiFamilyModal').classList.remove('hidden');
+            document.getElementById('aiFamilyModal').classList.add('flex');
+        }
+        function closeAiFamilyModal() {
+            document.getElementById('aiFamilyModal').classList.remove('flex');
+            document.getElementById('aiFamilyModal').classList.add('hidden');
+        }
+
+        // Шаг 2: Версии выбранного семейства
+        function openAiVersions(familyKey) {
+            closeAiFamilyModal();
+            const family = aiData[familyKey];
+            document.getElementById('versionModalTitle').innerText = "📥 " + family.title;
+            
+            const container = document.getElementById('versionsContainer');
+            container.innerHTML = '';
+            
+            family.versions.forEach((ver, idx) => {
+                const checked = idx === 0 ? 'checked' : '';
+                container.innerHTML += `
+                    <label class="flex items-center space-x-3 bg-slate-950 p-3 rounded-xl border border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                        <input type="radio" name="aiVersion" value="${ver.link}" ${checked} class="text-blue-600 focus:ring-blue-500">
+                        <div>
+                            <div class="font-semibold text-white">${ver.name}</div>
+                            <div class="text-xs text-slate-400">${ver.desc}</div>
+                        </div>
+                    </label>
+                `;
+            });
+
+            document.getElementById('aiVersionModal').classList.remove('hidden');
+            document.getElementById('aiVersionModal').classList.add('flex');
+        }
+
+        function backToFamilies() {
+            document.getElementById('aiVersionModal').classList.remove('flex');
+            document.getElementById('aiVersionModal').classList.add('hidden');
+            openAiFamilyModal();
+        }
+
+        function closeAiVersionModal() {
+            document.getElementById('aiVersionModal').classList.remove('flex');
+            document.getElementById('aiVersionModal').classList.add('hidden');
+        }
+
+        function confirmAiDownload() {
+            const selectedRadio = document.querySelector('input[name="aiVersion"]:checked');
+            if (selectedRadio) {
+                window.open(selectedRadio.value, '_blank');
+                closeAiVersionModal();
+            }
+        }
+
+        // Добавление проекта
+        document.getElementById('projectForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newProj = {
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                link: document.getElementById('link').value,
+                isAI: false
+            };
+            projects.unshift(newProj);
+            renderProjects();
+            document.getElementById('projectForm'.reset());
+            closeAddModal();
+        });
+
+        function deleteProject(index) {
+            projects.splice(index, 1);
+            renderProjects();
+        }
+
+        renderProjects();
+    </script>
+</body>
+</html>
